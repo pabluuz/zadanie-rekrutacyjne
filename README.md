@@ -1,39 +1,81 @@
-# Symfony Docker
+#Rozwiązanie
 
-A [Docker](https://www.docker.com/)-based installer and runtime for the [Symfony](https://symfony.com) web framework, with full [HTTP/2](https://symfony.com/doc/current/weblink.html), HTTP/3 and HTTPS support.
+##Front-end
 
-![CI](https://github.com/dunglas/symfony-docker/workflows/CI/badge.svg)
+##Back-end
 
-## Getting Started
+Proszę zaprojektować strukturę danych SQL (1), która będzie przechowywała dane główne obiektu typu numer, 
+data utworzenia i aktualny status oraz historię zdarzeń w formie nazwy statusu i daty jego powstania. 
+Proszę też zaprojektować obiekty PHP 7, które wykonywałyby operacje CRUD (2) na tych danych oraz operację wyszukiwania 
+wg nazwy, daty, statusu aktualnego oraz wg statusu historycznego. Wartością dodaną byłby projekt API REST lub SOAP, 
+które byłoby interfejsem do tych obiektów.
 
-1. If not already done, [install Docker Compose](https://docs.docker.com/compose/install/)
-2. Run `docker-compose build --pull --no-cache` to build fresh images
-3. Run `docker-compose up` (the logs will be displayed in the current shell)
-4. Open `https://localhost` in your favorite web browser and [accept the auto-generated TLS certificate](https://stackoverflow.com/a/15076602/1352334)
-5. Run `docker-compose down --remove-orphans` to stop the Docker containers.
+###(1) Struktura danych:
 
-## Features
+`>describe item`
 
-* Production, development and CI ready
-* Automatic HTTPS (in dev and in prod!)
-* HTTP/2, HTTP/3 and [Preload](https://symfony.com/doc/current/web_link.html) support
-* Built-in [Mercure](https://symfony.com/doc/current/mercure.html) hub
-* [Vulcain](https://vulcain.rocks) support
-* Just 2 services (PHP FPM and Caddy server)
-* Super-readable configuration
+| Field | Type | Null | Key | Default | Extra |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| id | int | NO | PRI | NULL | auto\_increment |
+| status\_type\_id | int | NO | MUL | NULL |  |
+| name | varchar\(255\) | YES |  | NULL |  |
+| number | bigint | YES |  | NULL |  |
+| created\_at | datetime | NO |  | NULL |  |
+| modified\_at | datetime | NO |  | NULL |  |
 
-**Enjoy!**
 
-## Docs
+`>describe status_type`
 
-1. [Build options](docs/build.md)
-2. [Using Symfony Docker with an existing project](docs/existing-project.md)
-3. [Support for extra services](docs/extra-services.md)
-4. [Deploying in production](docs/production.md)
-5. [Installing Xdebug](docs/xdebug.md)
-6. [Using a Makefile](docs/makefile.md)
-7. [Troubleshooting](docs/troubleshooting.md)
+| Field | Type | Null | Key | Default | Extra |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| id | int | NO | PRI | NULL | auto\_increment |
+| name | varchar\(255\) | NO |  | NULL |  |
 
-## Credits
+  
+`>describe status_history`
 
-Created by [Kévin Dunglas](https://dunglas.fr), co-maintained by [Maxime Helias](https://twitter.com/maxhelias) and sponsored by [Les-Tilleuls.coop](https://les-tilleuls.coop).
+| Field | Type | Null | Key | Default | Extra |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| id | int | NO | PRI | NULL | auto\_increment |
+| item\_id | int | NO | MUL | NULL |  |
+| status\_type\_id | int | NO | MUL | NULL |  |
+| date | datetime | NO |  | NULL |  |
+
+###(2) CRUD:
+Crud znajduje się w src/Controller/ItemController.php oraz w src/Controller/StatusController.php  
+Dodatkowo z poziomu dev można użyć php bin/console make:crud aby bardzo szybko zrobić jakiegokolwiek innego cruda
+
+###(3) REST API:
+W kontrolerze zawiera się też REST API
+- [x] Uniform Interface
+- [x] Client-server
+- [x] Stateless
+- [ ] Cacheable (z uwagi na czas pominąłem cache)
+- [x] Layered system
+
+
+
+##Deploy:  
+Bez phpstorma:  
+`docker build`  
+`docker-compose up -d`
+`docker-compose exec php bin/console do:mi:mi`
+`docker-compose exec php bin/console do:fi:lo`
+
+Z phpstormem:  
+Uruchamiamy `docker-compose.yml`
+`docker-compose exec php bin/console do:mi:mi`
+`docker-compose exec php bin/console do:fi:lo`
+
+Serwis dostępny jest pod ``http://localhost/``
+
+##Troubleshooting:
+`docker-compose exec php composer install`  
+`docker-compose exec php bin/console do:mi:mi`
+
+##Na podstawie:
+#####Boilerplate:
+https://github.com/martinsoenen/Docker-Boilerplate-Symfony  
+#####Symfony:
+https://symfony.com/  
+zależności symfony zawarte są w composer.json
