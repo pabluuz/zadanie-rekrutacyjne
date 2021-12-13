@@ -5,6 +5,7 @@ namespace App\DataFixtures;
 use App\Entity\Item;
 use App\Entity\StatusHistory;
 use App\Entity\StatusType;
+use App\Repository\StatusTypeRepository;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
@@ -46,8 +47,7 @@ class AppFixtures extends Fixture
      */
     private function makeStatuses(ObjectManager $manager): array {
         $statuses = [];
-        $statusNames = ['avialible','unavialible','delivery_only','special','unused'];
-        foreach ($statusNames as $statusName) {
+        foreach (StatusTypeRepository::VALID_STATUSES as $statusName) {
             $status = new StatusType();
             $status->setName($statusName);
             $manager->persist($status);

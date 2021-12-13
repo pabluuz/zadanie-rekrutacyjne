@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Item;
+use App\Entity\StatusType;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -19,6 +20,25 @@ class ItemRepository extends ServiceEntityRepository
         parent::__construct($registry, Item::class);
     }
 
+    public function findByStatusTypeInStatusHistory(StatusType $statusType)
+    {
+        $items = [];
+        $histories = $this->getEntityManager()
+            ->getRepository("App:StatusHistory")
+            ->findBy(["statusType" => $statusType->getId()]);
+        foreach ($histories as $history) {
+            $items[] = $history->getItem();
+        }
+        return array_unique($items, SORT_REGULAR );
+    }
+
+    /*public function findOneBy(array $criteria, array $orderBy = null)
+    {
+        $subject = $criteria[0]
+        in_array($criteria[0], self::VALID_STATUSES)
+        if (in_array($criteria[0], self::VALID_STATUSES))
+            return parent::findOneBy($criteria, $orderBy);
+    }*/
     // /**
     //  * @return Item[] Returns an array of Item objects
     //  */

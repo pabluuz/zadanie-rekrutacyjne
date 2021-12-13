@@ -4,13 +4,14 @@ namespace App\Controller;
 
 use App\Entity\Item;
 use App\Repository\ItemRepository;
+use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
+use JMS\Serializer\SerializerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Serializer\SerializerInterface;
 
 /**
  * @Route("/item")
@@ -26,7 +27,8 @@ class ItemController extends AbstractController
      */
     public function index(ItemRepository $itemRepository, SerializerInterface $serializer): JsonResponse
     {
-        return new JsonResponse($serializer->serialize($itemRepository->findAll(), 'json'), Response::HTTP_OK);
+        return new JsonResponse($serializer->serialize($itemRepository->findAll(), 'json'), Response::HTTP_OK, [],
+            true);
     }
 
     /**
@@ -46,15 +48,15 @@ class ItemController extends AbstractController
             $entityManager->persist($item);
             $entityManager->flush();
 
-            return new JsonResponse(['status' => 'ok'], Response::HTTP_OK);
+            return new JsonResponse(['status' => 'ok'], Response::HTTP_OK, [], true);
         } catch (\Throwable $exception) {
 
-            return new JsonResponse(['status' => $exception->getMessage()], Response::HTTP_BAD_REQUEST);
+            return new JsonResponse(['status' => $exception->getMessage()], Response::HTTP_BAD_REQUEST, [], true);
         }
     }
 
     /**
-     * @Route("/{id}", name="item_show", methods={"GET"})
+     * @Route("/show/{id}", name="item_show", methods={"GET"})
      * @param Item $item
      * @param SerializerInterface $serializer
      * @return Response
@@ -62,11 +64,11 @@ class ItemController extends AbstractController
     public function show(Item $item, SerializerInterface $serializer): Response
     {
 
-        return new JsonResponse($serializer->serialize($item, 'json'), Response::HTTP_OK);
+        return new JsonResponse($serializer->serialize($item, 'json'), Response::HTTP_OK, [], true);
     }
 
     /**
-     * @Route("/{id}/edit", name="item_edit", methods={"GET", "POST"})
+     * @Route("/edit/{id}", name="item_edit", methods={"PUT"})
      * @param Request $request
      * @param Item $item
      * @param EntityManagerInterface $entityManager
@@ -97,13 +99,12 @@ class ItemController extends AbstractController
     }
 
     /**
-     * @Route("/{id}", name="item_delete", methods={"POST"})
+     * @Route("/delete/{id}", name="item_delete", methods={"DELETE"})
      * @param Item $item
      * @param EntityManagerInterface $entityManager
-     * @param SerializerInterface $serializer
      * @return Response
      */
-    public function delete(Item $item, EntityManagerInterface $entityManager, SerializerInterface $serializer): Response
+    public function delete(Item $item, EntityManagerInterface $entityManager): Response
     {
         try {
             $entityManager->remove($item);
@@ -117,20 +118,34 @@ class ItemController extends AbstractController
     }
 
     /**
-     * @Route("/find", name="item_find", methods={"GET", "POST"})
+     * @Route("/find", name="item_find", methods={"POST"})
      * @param Request $request
      * @param EntityManagerInterface $entityManager
      * @param SerializerInterface $serializer
      * @return Response
+     *
+     * Kandydat do refaktoru. Header findBy fajnie by było chociaż walidować.
+     * Dodatkowo find powinno używać GETa, aby w pełni być RESTem
+     * See: https://www.vinaysahni.com/best-practices-for-a-pragmatic-restful-api#restful
      */
-    public function find(Request $request, EntityManagerInterface $entityManager, SerializerInterface $serializer): Response
-    {
+    public function find(
+        Request $request,
+        EntityManagerInterface $entityManager,
+        SerializerInterface $serializer
+    ): Response {
         try {
-            $findBy = $request->get('findBy');
-            $value = $request->get('value');
-            $item = $entityManager->getRepository('Item')->findOneBy([$findBy => $value]);
+            $findBy = $request->headers->get('findBy');
+            $value = $request->headers->get('value');
+            if ($findBy === "statusHistory") {
+                $statusType = $entityManager->getRepository('App:StatusType')->findOneBy(["name" => $value]);
+                $items = $entityManager->getRepository('App:Item')->findByStatusTypeInStatusHistory($statusType);
+            } elseif ($findBy === "createdAt" || $findBy === "modifiedAt") {
+                $items = $entityManager->getRepository('App:Item')->findBy([$findBy => new DateTimeImmutable($value)]);
+            } else {
+                $items = $entityManager->getRepository('App:Item')->findBy([$findBy => $value]);
+            }
 
-            return new JsonResponse($serializer->serialize($item, 'json'), Response::HTTP_OK);
+            return new JsonResponse($serializer->serialize($items, 'json'), Response::HTTP_OK, [], true);
         } catch (\Throwable $exception) {
 
             return new JsonResponse(['status' => $exception->getMessage()], Response::HTTP_BAD_REQUEST);

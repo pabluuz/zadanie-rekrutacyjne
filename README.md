@@ -7,7 +7,7 @@
 Proszę zaprojektować strukturę danych SQL (1), która będzie przechowywała dane główne obiektu typu numer, 
 data utworzenia i aktualny status oraz historię zdarzeń w formie nazwy statusu i daty jego powstania. 
 Proszę też zaprojektować obiekty PHP 7, które wykonywałyby operacje CRUD (2) na tych danych oraz operację wyszukiwania 
-wg nazwy, daty, statusu aktualnego oraz wg statusu historycznego. Wartością dodaną byłby projekt API REST lub SOAP, 
+wg nazwy, daty, statusu aktualnego oraz wg statusu historycznego. Wartością dodaną byłby projekt API REST (3) lub SOAP, 
 które byłoby interfejsem do tych obiektów.
 
 ### (1) Struktura danych:
@@ -42,40 +42,31 @@ które byłoby interfejsem do tych obiektów.
 | date | datetime | NO |  | NULL |  |
 
 ### (2) CRUD:
-Crud znajduje się w src/Controller/ItemController.php oraz w src/Controller/StatusController.php  
-Dodatkowo z poziomu dev można użyć php bin/console make:crud aby bardzo szybko zrobić jakiegokolwiek innego cruda
+Crud znajduje się w [/src/Controller/ItemController.php](src/Controller/ItemController.php)   
+Obsługuje on operacje:  
+- **C** new
+- **R** show
+- **U** edit
+- **D** delete
+- find
 
 ### (3) REST API:
 W kontrolerze zawiera się też REST API
 - [x] Uniform Interface
 - [x] Client-server
 - [x] Stateless
-- [ ] Cacheable (z uwagi na czas pominąłem cache)
+- [ ] Cacheable (to be implemented, jeśli czas pozwoli https://symfony.com/doc/5.4/components/cache.html)
 - [x] Layered system
 
-
+Dla przykładu zaimplementowałem indeks itemów /item/ (GET). Dla ułatwienia przekierowałem tam domyślny route /  
+W pliku `postman.json` znajduje się kolekcja do postmana z end-pointami
 
 ## Deploy:  
-Z dockerem:  
-`docker-compose build --pull --no-cache`  
-`docker-compose up`
+Polecam użyć wbudowanego webservera symfony
+Baza danych sqlite dostarczona jest wraz z rozwiązaniem. W przypadku problemów:  
+`php bin/console do:da:cr`  
+`php bin/console do:mi:mi`  
+`php bin/console do:fi:lo`  
 
-Bez dockera (nie testowałem):  
-Ustawiamy .env  
-Odpalamy:  
-php bin/console do:da:cr  
-php bin/console do:mi:mi  
-php bin/console do:fi:lo  
-
-Serwis dostępny jest pod ``https://localhost/``
-
-## Troubleshooting:
-`docker-compose exec php composer install`  
-`docker-compose exec php bin/console do:mi:mi`
-
-## Na podstawie:
-##### Boilerplate:
-https://github.com/dunglas/symfony-docker  
-##### Symfony:
-https://symfony.com/  
-zależności symfony zawarte są w composer.json
+![php słonik logo](https://php.net/images/logos/elephpant-running-78x48.gif)  
+Wymaga php >= 7.4

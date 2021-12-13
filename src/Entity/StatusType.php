@@ -6,7 +6,8 @@ use App\Repository\StatusTypeRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Serializer\Annotation\MaxDepth;
+use JMS\Serializer\Annotation as Serializer;
+use JMS\Serializer\Annotation\MaxDepth;
 
 /**
  * @ORM\Entity(repositoryClass=StatusTypeRepository::class)
@@ -26,13 +27,13 @@ class StatusType
     private $name;
 
     /**
-     * @MaxDepth(1)
+     * @Serializer\Exclude
      * @ORM\OneToMany(targetEntity=StatusHistory::class, mappedBy="statusType", orphanRemoval=true)
      */
     private $statusHistories;
 
     /**
-     * @MaxDepth(1)
+     * @Serializer\Exclude
      * @ORM\OneToMany(targetEntity=Item::class, mappedBy="statusType", orphanRemoval=true)
      */
     private $items;

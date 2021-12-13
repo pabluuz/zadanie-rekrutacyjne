@@ -1,0 +1,93 @@
+{
+	"info": {
+		"_postman_id": "6a59f5ac-1f45-41cf-a3c0-2d3a20b5c2fd",
+		"name": "zadanie-rekrutacyjne",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "find",
+			"item": [
+				{
+					"name": "find by name",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "value",
+								"value": "Emil Gislason",
+								"type": "text"
+							},
+							{
+								"key": "findBy",
+								"value": "name",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "localhost:8000/item/find",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"item",
+								"find"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "index",
+			"item": [
+				{
+					"name": "item list",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8000/item/",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"item",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "show",
+			"item": [
+				{
+					"name": "show first item",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8000/item/show/1",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"item",
+								"show",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

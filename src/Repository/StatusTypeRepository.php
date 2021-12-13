@@ -14,6 +14,8 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class StatusTypeRepository extends ServiceEntityRepository
 {
+    CONST VALID_STATUSES = ['avialible','unavialible','delivery_only','special','unused'];
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, StatusType::class);

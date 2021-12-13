@@ -5,7 +5,8 @@ namespace App\Entity;
 use App\Repository\StatusHistoryRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
-use Symfony\Component\Serializer\Annotation\MaxDepth;
+use JMS\Serializer\Annotation as Serializer;
+use JMS\Serializer\Annotation\MaxDepth;
 
 /**
  * @ORM\Entity(repositoryClass=StatusHistoryRepository::class)
@@ -27,14 +28,13 @@ class StatusHistory
     private $date;
 
     /**
-     * @MaxDepth(1)
+     * @Serializer\Exclude
      * @ORM\ManyToOne(targetEntity=Item::class, inversedBy="statusHistory")
      * @ORM\JoinColumn(nullable=false)
      */
     private $item;
 
     /**
-     * @MaxDepth(1)
      * @ORM\ManyToOne(targetEntity=StatusType::class, inversedBy="statusHistories")
      * @ORM\JoinColumn(nullable=false)
      */
