@@ -1,8 +1,8 @@
-#Rozwiązanie
+# Rozwiązanie
 
-##Front-end
+## Front-end
 
-##Back-end
+## Back-end
 
 Proszę zaprojektować strukturę danych SQL (1), która będzie przechowywała dane główne obiektu typu numer, 
 data utworzenia i aktualny status oraz historię zdarzeń w formie nazwy statusu i daty jego powstania. 
@@ -10,7 +10,7 @@ Proszę też zaprojektować obiekty PHP 7, które wykonywałyby operacje CRUD (2
 wg nazwy, daty, statusu aktualnego oraz wg statusu historycznego. Wartością dodaną byłby projekt API REST lub SOAP, 
 które byłoby interfejsem do tych obiektów.
 
-###(1) Struktura danych:
+### (1) Struktura danych:
 
 `>describe item`
 
@@ -41,11 +41,11 @@ które byłoby interfejsem do tych obiektów.
 | status\_type\_id | int | NO | MUL | NULL |  |
 | date | datetime | NO |  | NULL |  |
 
-###(2) CRUD:
+### (2) CRUD:
 Crud znajduje się w src/Controller/ItemController.php oraz w src/Controller/StatusController.php  
 Dodatkowo z poziomu dev można użyć php bin/console make:crud aby bardzo szybko zrobić jakiegokolwiek innego cruda
 
-###(3) REST API:
+### (3) REST API:
 W kontrolerze zawiera się też REST API
 - [x] Uniform Interface
 - [x] Client-server
@@ -55,27 +55,27 @@ W kontrolerze zawiera się też REST API
 
 
 
-##Deploy:  
-Bez phpstorma:  
-`docker build`  
-`docker-compose up -d`
-`docker-compose exec php bin/console do:mi:mi`
-`docker-compose exec php bin/console do:fi:lo`
+## Deploy:  
+Z dockerem:  
+`docker-compose build --pull --no-cache`  
+`docker-compose up`
 
-Z phpstormem:  
-Uruchamiamy `docker-compose.yml`
-`docker-compose exec php bin/console do:mi:mi`
-`docker-compose exec php bin/console do:fi:lo`
+Bez dockera (nie testowałem):  
+Ustawiamy .env  
+Odpalamy:  
+php bin/console do:da:cr  
+php bin/console do:mi:mi  
+php bin/console do:fi:lo  
 
-Serwis dostępny jest pod ``http://localhost/``
+Serwis dostępny jest pod ``https://localhost/``
 
-##Troubleshooting:
+## Troubleshooting:
 `docker-compose exec php composer install`  
 `docker-compose exec php bin/console do:mi:mi`
 
-##Na podstawie:
-#####Boilerplate:
-https://github.com/martinsoenen/Docker-Boilerplate-Symfony  
-#####Symfony:
+## Na podstawie:
+##### Boilerplate:
+https://github.com/dunglas/symfony-docker  
+##### Symfony:
 https://symfony.com/  
 zależności symfony zawarte są w composer.json

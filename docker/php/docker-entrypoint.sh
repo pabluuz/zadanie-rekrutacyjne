@@ -31,7 +31,7 @@ if [ "$1" = 'php-fpm' ] || [ "$1" = 'php' ] || [ "$1" = 'bin/console' ]; then
 
 	if [ "$APP_ENV" != 'prod' ]; then
 		rm -f .env.local.php
-		composer install --prefer-dist --no-progress --no-interaction
+		composer install --prefer-dist --no-progress --ignore-requirements --no-interaction
 	fi
 
 	if grep -q ^DATABASE_URL= .env; then
@@ -63,6 +63,7 @@ if [ "$1" = 'php-fpm' ] || [ "$1" = 'php' ] || [ "$1" = 'bin/console' ]; then
 
 		if ls -A migrations/*.php >/dev/null 2>&1; then
 			bin/console doctrine:migrations:migrate --no-interaction
+			bin/console doctrine:fi:lo --no-interaction
 		fi
 	fi
 
