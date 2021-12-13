@@ -59,7 +59,7 @@ W kontrolerze zawiera się też REST API
 - [x] Layered system
 
 Dla przykładu zaimplementowałem indeks itemów /item/ (GET). Dla ułatwienia przekierowałem tam domyślny route /  
-W pliku `postman.json` znajduje się kolekcja do postmana z end-pointami
+W pliku [postman.json](postman.json) znajduje się kolekcja do postmana z end-pointami
 
 ## Deploy:  
 Polecam użyć wbudowanego webservera symfony

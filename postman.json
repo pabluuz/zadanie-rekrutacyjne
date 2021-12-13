@@ -37,6 +37,96 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "find by statusHistory",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "value",
+								"value": "unavialible",
+								"type": "text"
+							},
+							{
+								"key": "findBy",
+								"value": "statusHistory",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "localhost:8000/item/find",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"item",
+								"find"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "find by statusType",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "value",
+								"value": "1",
+								"type": "text"
+							},
+							{
+								"key": "findBy",
+								"value": "statusType",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "localhost:8000/item/find",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"item",
+								"find"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "find by createdAt",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "value",
+								"value": "2021-12-13T12:50:01+01:00",
+								"type": "text"
+							},
+							{
+								"key": "findBy",
+								"value": "createdAt",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "localhost:8000/item/find",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"item",
+								"find"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -82,6 +172,65 @@
 								"item",
 								"show",
 								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "delete",
+			"item": [
+				{
+					"name": "delete second item",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "localhost:8000/item/delete/3",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"item",
+								"delete",
+								"3"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "edit",
+			"item": [
+				{
+					"name": "edit",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n        \"id\": 2,\r\n        \"name\": \"Zmodyfikowany item\",\r\n        \"number\": 123\r\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8000/item/edit/2",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"item",
+								"edit",
+								"2"
 							]
 						}
 					},
