@@ -1,9 +1,7 @@
 # Rozwiązanie
 
-## Front-end
-
-## Back-end
-
+## Back-end ![100%](https://progress-bar.dev/100)  
+    
 Proszę zaprojektować strukturę danych SQL (1), która będzie przechowywała dane główne obiektu typu numer, 
 data utworzenia i aktualny status oraz historię zdarzeń w formie nazwy statusu i daty jego powstania. 
 Proszę też zaprojektować obiekty PHP 7, które wykonywałyby operacje CRUD (2) na tych danych oraz operację wyszukiwania 
@@ -61,7 +59,7 @@ W kontrolerze zawiera się też REST API
 Dla przykładu zaimplementowałem indeks itemów /item/ (GET). Dla ułatwienia przekierowałem tam domyślny route /  
 W pliku [postman.json](postman.json) znajduje się kolekcja do postmana z end-pointami
 
-## Deploy:  
+### Deploy:  
 Polecam użyć wbudowanego webservera symfony
 Baza danych sqlite dostarczona jest wraz z rozwiązaniem. W przypadku problemów:  
 `php bin/console do:da:cr`  
@@ -70,3 +68,88 @@ Baza danych sqlite dostarczona jest wraz z rozwiązaniem. W przypadku problemów
 
 ![php słonik logo](https://php.net/images/logos/elephpant-running-78x48.gif)  
 Wymaga php >= 7.4
+
+## Front-end ![50%](https://progress-bar.dev/50)  
+  
+Pod adresem https://docs.sencha.com/extjs/6.2.0/ znajduje się dokumentacja framework-a Sencha ExtJS. 
+Na podstawie tej dokumentacji proszę opisać najlepszy sposób połączenia danych z załączonego pliku JSON z 
+aplikacją zawierającą listę danych (grid) (1) i edycję danych szczegółowych w formularzu (data form) (2). 
+Wartością dodaną byłaby prosta implementacja w przykładowej aplikacji ExtJS.  
+Załącznik: [Sample-201207.json](Sample-201207.json)
+
+### Rozwiązanie (częściowe):
+Aplikacja znajduje się w [/front/index.html](/front/index.html)  
+Najmocniej przepraszam za bałagan w tej części repo
+#### Co się udało:
+(1) Sposób na załadowanie danych, który znalazłem w dokumentacji to użycie proxy z urlem jsona w store.
+```
+Ext.define('MyApp.store.Items', {
+    extend: 'Ext.data.JsonStore',
+
+    alias: 'store.Items',
+    autoLoad: true,
+    model: 'MyApp.model.Items',
+
+    proxy: {
+        type: 'ajax',
+        url : 'Sample-201207.json',
+        reader: {
+            type: 'json'
+        }
+    }
+});
+```
+
+(2) Bardzo prostą edycję, bez zapisu udało mi się uzyskać podpinając plugin pod widok
+```
+Ext.define('MyApp.view.main.List', {
+.....
+plugins: [
+        Ext.create('Ext.grid.plugin.CellEditing', {
+            clicksToEdit: 1
+        })
+    ],
+.....
+columns: [
+        { text: 'ID',  dataIndex: 'ID', flex: 1  },
+        { text: 'Name',  dataIndex: 'Name', flex: 1 ,
+            editor: {
+                xtype: 'textfield',
+                allowBlank: false
+            } },
+```
+
+#### Na co zabrakło czasu:
+(1) Json z danymi ma dwa poziomy, tj - każdy `item` ma wiele `history`. Wyzwaniem przy tym
+jest takie wyświetlenie grida, aby dało się jakoś wejść głębiej i edytować history.  
+Rozważałem też opcję braku edycji history i wyświetlenia tego jako zwykłe pole rzutowane na stringa 
+(wartość zmieniała by się przy edycji wartości statusu)  
+(2) Do edycji danych powinienem użyć dataforma 
+[https://docs.sencha.com/extjs/6.2.0/guides/quick_start/data_forms.html](https://docs.sencha.com/extjs/6.2.0/guides/quick_start/data_forms.html)  
+i następnie - 
+- wypełnić go danymi ze store
+- dodać button Update w widoku
+```
+buttons: [
+            {
+                text: 'Update',
+                itemId: 'btnUpdate',
+                formBind: true,
+                handler: 'onUpdateClick'
+            },
+```
+- w kontrolerze dodać
+```
+onUpdateClick: function (sender, record) {
+        ......
+
+        itemForm.submit({
+            url: '/api/item',
+            ......
+            headers:
+            {
+                'Content-Type': 'application/json'
+            },
+```
+Dodatkowej lektury instrukcji wymagało by też same API do wysyłania rekordów, 
+ponieważ nie wiem jeszcze jak to działa w ExtJs
